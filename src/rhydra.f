@@ -15,7 +15,7 @@ c     *                     nc, nr, ncf, nrf,
      *                     outnewi, outnewj, basin, 
      *                     dem, outdir, sillh,
      *                     prcpi, evapi, runin, drainin,
-     *                     outelv, lakem )
+     *                     outelv, lakem, lakevolm, lakevola )
       !-------------------------------------------------------------------------
       ! Runs one iteration of hydra model
       !-------------------------------------------------------------------------
@@ -135,6 +135,11 @@ c
       double precision lonfst,latfst
       parameter(lonfst = (-180.+((i2start-1)*dgper))+(.5*(1/12.)))
       parameter(latfst = (90.-((j2start-1)*dgper))-(.5*(1/12.)))
+c
+c variables for tracking convergence
+c
+      double precision lakevolm(nmons,spin+nyrs+1)
+      double precision lakevola(spin+nyrs+1)
 
 c--------------------------------------------------------------
 c Define lat and lon grids for writing out 5x5' data.
@@ -281,6 +286,8 @@ c
  220   continue
  210  continue
 c
+       lakevolm(:,:) = 0.
+       lakevola(:) = 0.
 
 c--------------------------------------------------------------
 c convert input from mm/day to m/s
@@ -1023,6 +1030,9 @@ c
      *           *area(j))*larea(i,j)
         enddo
        enddo
+       lakevolm(imon,iyear) = volchk
+       lakevola(iyear) = lakevola(iyear) + volchk
+       !write(*,*) imon,iyear,lakevolm(imon,iyear)
 c
 c write thee out if you are interested in checking the mass conservation
 c
