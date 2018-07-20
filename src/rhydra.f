@@ -190,8 +190,8 @@ c nyr is the number of years to run the model, delt is the timestep.
 c
       ioo  = 2.5e-03 
 c     delt = 1800. !shorter timestep for poleward locations
-      delt = 3600. !good for tropics and mid-latitudes
-c      delt = 86400.
+c      delt = 3600. !good for tropics and mid-latitudes
+      delt = 86400.
       timed = 13.0e+05   !when seperating baseflow from surface runoff
       timer = 7200.    
 c     timed = timer     !for IBIS runs, which already calculates residence time
