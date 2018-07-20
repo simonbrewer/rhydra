@@ -24,8 +24,8 @@ rhydra <- function(nyrs, startyear, converg = 1, laket = 0, spin = 1,
                    outdir = as.double(rivdir), sillh = as.double(mflac),
                    prcpi = as.double(prec), evapi = as.double(evap),
                    runin = as.double(runoff), drainin = as.double(drain),
-                   outelv = double(gridxf*gridyf), lakem = double(gridxf*gridyf), 
-                   lakevolm = double(12*(spin+nyrs)+1), lakevola = double(spin+nyrs+1))
+                   outelv = double(gridxf*gridyf), lakem = double(gridxf*gridyf),
+                   lakevolm = double(12*(nyrs+spin)), lakevola = double(nyrs+spin))
   return(simcf)
 
 }

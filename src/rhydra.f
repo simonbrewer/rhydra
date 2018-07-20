@@ -138,8 +138,8 @@ c
 c
 c variables for tracking convergence
 c
-      double precision lakevolm(nmons,spin+nyrs+1)
-      double precision lakevola(spin+nyrs+1)
+      double precision lakevolm(12,spin+nyrs)
+      double precision lakevola(spin+nyrs)
 
 c--------------------------------------------------------------
 c Define lat and lon grids for writing out 5x5' data.
@@ -286,9 +286,6 @@ c
  220   continue
  210  continue
 c
-       lakevolm(:,:) = 0.
-       lakevola(:) = 0.
-
 c--------------------------------------------------------------
 c convert input from mm/day to m/s
 c
@@ -1022,6 +1019,7 @@ c voll. This tells me mass conservation is taking place. It is
 c possible that it may not be conserved if I make a mistake in
 c the way water is spread acros the surface.
 c
+       !lakevola(iyear) = 0.
        do j = jstart+1,jend-1
         do i = istart+1,iend-1
         ii = i - (istart-1)
@@ -1032,7 +1030,6 @@ c
        enddo
        lakevolm(imon,iyear) = volchk
        lakevola(iyear) = lakevola(iyear) + volchk
-       !write(*,*) imon,iyear,lakevolm(imon,iyear)
 c
 c write thee out if you are interested in checking the mass conservation
 c
