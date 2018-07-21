@@ -20,6 +20,8 @@ c     *                     nc, nr, ncf, nrf,
       ! Runs one iteration of hydra model
       !-------------------------------------------------------------------------
       ! Input variables
+      integer sampi,sampj
+
       integer nc,nr,nrf,ncf,istart,iend,jstart,jend,
      *        i2start,i2end,j2start,j2end,i3start,i3end,
      *        j3start,j3end,inc,inr,incf,inrf,nmons,inity
@@ -242,6 +244,10 @@ c
 c--------------------------------------------------------------
 c initialize variables
 c
+      sampi=90
+      sampj=135
+c
+
       do 205 j = 1,inrf
        do 206 i = 1,incf
         ii = i + (istart-1)
@@ -461,17 +467,18 @@ c
 c create leap year for the files I am using (starting at 1937)
 c
 c      if(iyear .le. 3)then   !start 1937
-       if(iyear .le. leap) then   !start 1946
-        ndaypm(2) = 28
-       elseif(mod((iyear+leap)-startyear,4.) .eq. 0. )then
-        ndaypm(2) = 29
-       else
-        ndaypm(2) = 28
-       endif
+c       if(iyear .le. leap) then   !start 1946
+c        ndaypm(2) = 28
+c       elseif(mod((iyear+leap)-startyear,4.) .eq. 0. )then
+c        ndaypm(2) = 29
+c       else
+c        ndaypm(2) = 28
+c       endif
 c
 c monthly loop
 c
-       do 131 imon = 1,12
+c       do 131 imon = 1,12
+       do 131 imon = 4,5
 c
 c calculate the number of months from start of run, not counting the 
 c spin-up
@@ -500,7 +507,8 @@ c
 c
 c start the daily loop
 c
-       do 132 iday = 1,ndaypm(imon)
+c       do 132 iday = 1,ndaypm(imon)
+       do 132 iday = 1,1
 c
 c calculate the number of days from start of run
 c
@@ -582,6 +590,12 @@ c
      *     (evapi(i2,j2,icmon)*area(j)))
 c
          endif
+c         if ((ii.eq.sampi).and.(jj.eq.sampj)) then
+c                 write(*,*) icmon,iday
+c                 write(*,*) prcpi(i2,j2,icmon),prcpi(i2,j2,km),prcpl
+c                 write(*,*) evapi(i2,j2,icmon),evapi(i2,j2,km),evapl
+c         endif
+ 
 c
 c --------------------------------------------------------------------
 c IRRIGATION - This function is specific for Lake Chad in the 1970s tp 1990s.
@@ -683,14 +697,26 @@ c
 c
 c calculate volume in runoff reservoir for land or lake
 c
+         if ((ii.eq.sampi).and.(jj.eq.sampj)) then
+                 write(*,*) "r1",volr(ii,jj)
+         endif
          rout = volr(ii,jj)/timer
          volr(ii,jj) = max(volr(ii,jj) + (rin-rout)*delt,0.)
+         if ((ii.eq.sampi).and.(jj.eq.sampj)) then
+                 write(*,*) "r2",rin,rout
+                 write(*,*) "r2",volr(ii,jj)
+         endif
 c
 c calculate volume in baseflow reservoir, land only
 c
 c        bout = 0.75*volb(ii,jj)/timed + 0.25*volb(ii,jj)/timeg
          bout = volb(ii,jj)/timed
          volb(ii,jj) = max(volb(ii,jj) + (bin-bout)*delt,0.)
+         if ((ii.eq.sampi).and.(jj.eq.sampj)) then
+                 write(*,*) "b",bin,bout
+                 write(*,*) "b",volb(ii,jj)
+         endif
+c        
 c----------------------------------------------------
 c calculate volume in transport reservoir
 c The idea is to calculate the volume
@@ -884,6 +910,7 @@ c corresponds to the sill is calculated for only that water
 c volume in excess of the volume required to fill the lake.
 c
 c       effvel = 0.5 !alternatively could set velocity to a  constant
+c       effvel = 0.03 !alternatively could set velocity to a  constant
 c
          fluxout(ii,jj) = max((voll(ii,jj)-volt(ii,jj))*
      *                  (effvel/dist),0.)
